@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ahsan Key Manager - Advanced</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+    body {
+      background: #0b0e1a;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 32px;
+      padding: 40px 32px;
+      width: 100%;
+      max-width: 680px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+    }
+    h2 {
+      color: #fff;
+      font-weight: 600;
+      font-size: 26px;
+      text-align: center;
+    }
+    .sub-text {
+      color: #8892b0;
+      text-align: center;
+      font-size: 13px;
+      margin: 8px 0 28px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 20px;
+    }
+    label {
+      color: #c8cee6;
+      font-size: 13px;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 5px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: 0.2s;
+      margin-bottom: 16px;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: #6a7aff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    input::placeholder, textarea::placeholder {
+      color: #5a6480;
+    }
+    select option {
+      background: #1a1e2e;
+      color: #fff;
+    }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-bottom: 12px;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: #6a7aff; color: #fff; }
+    .btn-primary:hover { background: #5a6aff; transform: scale(1.01); }
+    .btn-success { background: #2ecc71; color: #fff; }
+    .btn-success:hover { background: #27ae60; }
+    .btn-danger { background: #e74c3c; color: #fff; }
+    .btn-danger:hover { background: #c0392b; }
+    .btn-warning { background: #f39c12; color: #fff; }
+    .btn-warning:hover { background: #e67e22; }
+    .btn-info { background: #3498db; color: #fff; }
+    .btn-info:hover { background: #2980b9; }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+    .btn-outline:hover { background: rgba(255, 255, 255, 0.05); }
+    .btn-sm {
+      padding: 8px 14px;
+      font-size: 13px;
+      width: auto;
+      margin-bottom: 0;
+      border-radius: 10px;
+    }
+    .flex-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .flex-row .btn { flex: 1; }
+    .flex-row-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .flex-row-wrap .btn { flex: 1; min-width: 120px; }
+    .key-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
+      padding: 16px;
+      margin: 16px 0;
+      border-left: 4px solid #6a7aff;
+      word-break: break-all;
+      color: #d0d8f0;
+      font-size: 14px;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+    .key-box span { color: #fff; font-weight: 500; }
+    .key-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .key-item:last-child { border-bottom: none; }
+    .key-text {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: #d0d8f0;
+      flex: 1;
+      word-break: break-all;
+    }
+    .key-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .hidden { display: none !important; }
+    .status {
+      color: #8cf0a0;
+      font-size: 14px;
+      padding: 10px 0;
+      text-align: center;
+      min-height: 24px;
+    }
+    .status.error { color: #f08a8a; }
+    .status.info { color: #8ab4f0; }
+    .badge {
+      background: rgba(255, 255, 255, 0.06);
+      padding: 6px 14px;
+      border-radius: 40px;
+      font-size: 12px;
+      color: #aab4d0;
+    }
+    .badge-green { background: rgba(46, 204, 113, 0.15); color: #8cf0a0; }
+    .badge-red { background: rgba(231, 76, 60, 0.15); color: #f08a8a; }
+    .badge-yellow { background: rgba(243, 156, 18, 0.15); color: #f5c77a; }
+    .badge-purple { background: rgba(106, 122, 255, 0.15); color: #aab4f0; }
+    hr {
+      border: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      margin: 18px 0;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .stat-card {
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      padding: 12px 8px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .stat-card .num {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .stat-card .lbl {
+      font-size: 10px;
+      color: #8892b0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+    .tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 18px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 4px;
+      border-radius: 12px;
+    }
+    .tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #8892b0;
+      cursor: pointer;
+      transition: 0.2s;
+      border: none;
+      background: transparent;
+    }
+    .tab.active {
+      background: rgba(106, 122, 255, 0.2);
+      color: #aab4f0;
+    }
+    .tab:hover:not(.active) { color: #c8cee6; }
+    .key-actions {
+      display: flex;
+      gap: 4px;
+    }
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: none;
+      border-radius: 8px;
+      padding: 5px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      color: #c8cee6;
+      transition: 0.2s;
+    }
+    .icon-btn:hover { background: rgba(255, 255, 255, 0.12); }
+    .icon-btn.danger:hover { background: rgba(231, 76, 60, 0.3); color: #f08a8a; }
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #1a1e2e;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 14px 20px;
+      color: #fff;
+      font-size: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      transform: translateX(120%);
+      transition: transform 0.3s ease;
+      z-index: 9999;
+      max-width: 320px;
+    }
+    .toast.show { transform: translateX(0); }
+    .toast.success { border-left: 4px solid #2ecc71; }
+    .toast.error { border-left: 4px solid #e74c3c; }
+    .toast.info { border-left: 4px solid #3498db; }
+    .duration-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .duration-row select { flex: 1; margin-bottom: 0; }
+    .search-box {
+      position: relative;
+      margin-bottom: 12px;
+    }
+    .search-box input { margin-bottom: 0; padding-left: 40px; }
+    .search-box::before {
+      content: '🔍';
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      opacity: 0.5;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 30px 10px;
+      color: #5a6480;
+      font-size: 13px;
+    }
+    .empty-state .big { font-size: 32px; display: block; margin-bottom: 8px; }
+    .progress-bar {
+      height: 4px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6a7aff, #2ecc71);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .container { padding: 28px 20px; }
+      .tabs { flex-wrap: wrap; }
+      .tab { font-size: 11px; padding: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container" id="app">
+
+  <!-- ========== LOGIN SCREEN ========== -->
+  <div id="loginScreen">
+    <h2>🔐 Ahsan Key Manager</h2>
+    <div class="sub-text">Secure Access Only &nbsp;·&nbsp; Advanced Edition</div>
+
+    <label>Email</label>
+    <input type="email" id="loginEmail" placeholder="Enter your email" />
+
+    <label>Password</label>
+    <input type="password" id="loginPassword" placeholder="Enter your password" />
+
+    <button class="btn btn-primary" onclick="login()">Login</button>
+    <div id="loginStatus" class="status"></div>
+  </div>
+
+  <!-- ========== DASHBOARD ========== -->
+  <div id="dashboardScreen" class="hidden">
+    <h2>🔑 Ahsan Keys</h2>
+    <div class="sub-text">
+      Welcome, Ahsan! &nbsp;
+      <span class="badge">Max 10,000 keys</span>
+      <span class="badge badge-purple" id="keyCountBadge">0 keys</span>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="num" id="statTotal">0</div>
+        <div class="lbl">Total</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" style="color:#8cf0a0" id="statAvailable">0</div>
+        <div class="lbl">Available</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" style="color:#f08a8a" id="statUsed">0</div>
+        <div class="lbl">Used</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" style="color:#f5c77a" id="statExpired">0</div>
+        <div class="lbl">Expired</div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('generate', this)">➕ Generate</button>
+      <button class="tab" onclick="switchTab('manage', this)">📋 Manage</button>
+      <button class="tab" onclick="switchTab('tools', this)">🛠 Tools</button>
+    </div>
+
+    <!-- ========== GENERATE TAB ========== -->
+    <div id="tab-generate">
+      <label>🔹 Generate Random Key</label>
+      <div class="flex-row" style="margin-bottom:12px;">
+        <input type="number" id="deviceCount" placeholder="Devices (1-10000)" min="1" max="10000" value="1" style="margin-bottom:0;" />
+      </div>
+
+      <label>⏳ Key Duration</label>
+      <div class="duration-row">
+        <select id="durationValue">
+          <option value="1">1</option>
+          <option value="7" selected>7</option>
+          <option value="15">15</option>
+          <option value="30">30</option>
+          <option value="60">60</option>
+          <option value="90">90</option>
+          <option value="180">180</option>
+          <option value="365">365</option>
+          <option value="0">Never Expire</option>
+        </select>
+        <select id="durationUnit">
+          <option value="days" selected>Days</option>
+          <option value="hours">Hours</option>
+          <option value="minutes">Minutes</option>
+        </select>
+      </div>
+
+      <button class="btn btn-success" onclick="generateRandomKeys()">🎲 Generate Random Keys</button>
+
+      <hr />
+
+      <label>🔹 Generate Custom Key</label>
+      <input type="text" id="customKeyInput" placeholder='e.g. "ahsan-vip" or "pro-user"' />
+
+      <label>⏳ Custom Key Duration</label>
+      <div class="duration-row">
+        <select id="customDurationValue">
+          <option value="1">1</option>
+          <option value="7" selected>7</option>
+          <option value="15">15</option>
+          <option value="30">30</option>
+          <option value="60">60</option>
+          <option value="90">90</option>
+          <option value="180">180</option>
+          <option value="365">365</option>
+          <option value="0">Never Expire</option>
+        </select>
+        <select id="customDurationUnit">
+          <option value="days" selected>Days</option>
+          <option value="hours">Hours</option>
+          <option value="minutes">Minutes</option>
+        </select>
+      </div>
+
+      <button class="btn btn-warning" onclick="generateCustomKey()">✨ Generate Custom Key</button>
+    </div>
+
+    <!-- ========== MANAGE TAB ========== -->
+    <div id="tab-manage" class="hidden">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search keys..." oninput="renderKeys()" />
+      </div>
+
+      <div class="flex-row" style="margin-bottom:12px;">
+        <select id="filterStatus" onchange="renderKeys()" style="margin-bottom:0;">
+          <option value="all">All Keys</option>
+          <option value="available">🟢 Available</option>
+          <option value="used">🔴 Used</option>
+          <option value="expired">🟡 Expired</option>
+        </select>
+        <select id="sortBy" onchange="renderKeys()" style="margin-bottom:0;">
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="expiry">Expiring Soon</option>
+        </select>
+      </div>
+
+      <div id="keysDisplay" class="key-box">
+        <div class="empty-state">
+          <span class="big">📋</span>
+          No keys generated yet.
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== TOOLS TAB ========== -->
+    <div id="tab-tools" class="hidden">
+      <label>🔍 Validate / Use a Key</label>
+      <div class="flex-row" style="margin-bottom:12px;">
+        <input type="text" id="validateKeyInput" placeholder="Enter key to validate..." style="margin-bottom:0;" />
+        <button class="btn btn-info" onclick="validateKey()" style="width:auto;margin-bottom:0;padding:14px 20px;">Check</button>
+      </div>
+
+      <hr />
+
+      <label>🗑 Delete a Key</label>
+      <div class="flex-row" style="margin-bottom:12px;">
+        <input type="text" id="deleteKeyInput" placeholder="Enter key to delete..." style="margin-bottom:0;" />
+        <button class="btn btn-danger" onclick="deleteKey()" style="width:auto;margin-bottom:0;padding:14px 20px;">Delete</button>
+      </div>
+
+      <hr />
+
+      <label>📤 Export Keys</label>
+      <div class="flex-row-wrap" style="margin-bottom:12px;">
+        <button class="btn btn-outline" onclick="exportKeys('json')">📄 JSON</button>
+        <button class="btn btn-outline" onclick="exportKeys('txt')">📝 TXT</button>
+        <button class="btn btn-outline" onclick="exportKeys('csv')">📊 CSV</button>
+      </div>
+
+      <hr />
+
+      <label>📥 Import Keys (JSON)</label>
+      <textarea id="importData" rows="3" placeholder='Paste JSON here...'></textarea>
+      <button class="btn btn-outline" onclick="importKeys()">Import</button>
+
+      <hr />
+
+      <label>⚠️ Danger Zone</label>
+      <div class="flex-row-wrap">
+        <button class="btn btn-danger" onclick="resetAllKeys()">🔄 Reset All Keys</button>
+        <button class="btn btn-warning" onclick="resetUsedKeys()">🧹 Clear Used Keys</button>
+        <button class="btn btn-warning" onclick="resetExpiredKeys()">⏰ Clear Expired Keys</button>
+      </div>
+    </div>
+
+    <div id="dashboardStatus" class="status"></div>
+    <hr />
+    <button class="btn btn-outline" onclick="logout()" style="margin-top:6px;">🚪 Logout</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ============================================================
+  //  CONFIG
+  // ============================================================
+  const VALID_EMAIL = 'AhsanxAnonymous@gmail.com';
+  const VALID_PASS  = 'papabol';
+  const MAX_KEYS    = 10000;
+
+  // ============================================================
+  //  STATE
+  // ============================================================
+  let keys = []; // { key, used, usedAt, createdAt, expiresAt, note }
+
+  function loadState() {
+    const stored = localStorage.getItem('ahsanKeysAdvanced');
+    if (stored) {
+      try {
+        keys = JSON.parse(stored);
+        keys = keys.filter(k => typeof k === 'object' && k.key).map(k => ({
+          key: k.key,
+          used: k.used === true,
+          usedAt: k.usedAt || null,
+          createdAt: k.createdAt || Date.now(),
+          expiresAt: k.expiresAt || null,
+          note: k.note || ''
+        }));
+      } catch(e) { keys = []; }
+    } else {
+      keys = [];
+    }
+    if (keys.length > MAX_KEYS) keys = keys.slice(0, MAX_KEYS);
+    saveState();
+  }
+
+  function saveState() {
+    localStorage.setItem('ahsanKeysAdvanced', JSON.stringify(keys));
+  }
+
+  // ============================================================
+  //  UTILITY
+  // ============================================================
+  function isExpired(k) {
+    if (!k.expiresAt) return false;
+    return Date.now() > k.expiresAt;
+  }
+
+  function isAvailable(k) {
+    return !k.used && !isExpired(k);
+  }
+
+  function formatTime(ts) {
+    if (!ts) return '—';
+    return new Date(ts).toLocaleString('en-GB', {
+      day: '2-digit', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  function timeLeft(expiresAt) {
+    if (!expiresAt) return '∞ Never';
+    const diff = expiresAt - Date.now();
+    if (diff <= 0) return '⛔ Expired';
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    if (days > 0) return `${days}d ${hours}h left`;
+    if (hours > 0) return `${hours}h ${mins}m left`;
+    return `${mins}m left`;
+  }
+
+  function showToast(msg, type = 'info') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + type;
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => { t.className = 'toast ' + type; }, 2800);
+  }
+
+  function setStatus(msg, isError = false, isInfo = false) {
+    const el = document.getElementById('dashboardStatus');
+    el.textContent = msg;
+    el.className = 'status' + (isError ? ' error' : isInfo ? ' info' : '');
+  }
+
+  // ============================================================
+  //  LOGIN / LOGOUT
+  // ============================================================
+  function login() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass  = document.getElementById('loginPassword').value.trim();
+    const status = document.getElementById('loginStatus');
+
+    if (email === VALID_EMAIL && pass === VALID_PASS) {
+      status.textContent = '✅ Login successful!';
+      status.className = 'status';
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('dashboardScreen').classList.remove('hidden');
+      loadState();
+      updateStats();
+      renderKeys();
+      showToast('Welcome back, Ahsan! 🎉', 'success');
+    } else {
+      status.textContent = '❌ Invalid email or password.';
+      status.className = 'status error';
+    }
+  }
+
+  function logout() {
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('dashboardScreen').classList.add('hidden');
+    document.getElementById('loginStatus').textContent = '';
+    document.getElementById('loginPassword').value = '';
+  }
+
+  // ============================================================
+  //  TAB SWITCHING
+  // ============================================================
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    ['generate', 'manage', 'tools'].forEach(t => {
+      document.getElementById('tab-' + t).classList.add('hidden');
+    });
+    document.getElementById('tab-' + name).classList.remove('hidden');
+    if (name === 'manage') renderKeys();
+  }
+
+  // ============================================================
+  //  KEY GENERATION
+  // ============================================================
+  function randomKeyString() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = 'ahsan-';
+    for (let i = 0; i < 10; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    result += '-' + Date.now().toString(36).slice(-4);
+    return result;
+  }
+
+  function keyExists(keyStr) {
+    return keys.some(k => k.key === keyStr);
+  }
+
+  function durationToMs(value, unit) {
+    value = parseInt(value, 10);
+    if (value === 0) return null; // never expire
+    if (unit === 'minutes') return value * 60 * 1000;
+    if (unit === 'hours') return value * 3600 * 1000;
+    return value * 86400 * 1000; // days
+  }
+
+  function generateRandomKeys() {
+    const input = document.getElementById('deviceCount');
+    let count = parseInt(input.value, 10);
+    if (isNaN(count) || count < 1) count = 1;
+    if (count > MAX_KEYS) count = MAX_KEYS;
+
+    const durVal = document.getElementById('durationValue').value;
+    const durUnit = document.getElementById('durationUnit').value;
+    const durMs = durationToMs(durVal, durUnit);
+
+    const available = MAX_KEYS - keys.length;
+    if (available <= 0) {
+      setStatus('❌ Max 10,000 keys reached!', true);
+      showToast('Max keys reached!', 'error');
+      return;
+    }
+    if (count > available) count = available;
+
+    const now = Date.now();
+    const expiresAt = durMs ? now + durMs : null;
+
+    let generated = [];
+    for (let i = 0; i < count; i++) {
+      let newKey;
+      let attempts = 0;
+      do {
+        newKey = randomKeyString();
+        attempts++;
+      } while (keyExists(newKey) && attempts < 50);
+      if (!keyExists(newKey)) {
+        keys.push({
+          key: newKey,
+          used: false,
+          usedAt: null,
+          createdAt: now,
+          expiresAt: expiresAt,
+          note: ''
+        });
+        generated.push(newKey);
+      }
+    }
+    saveState();
+    updateStats();
+    renderKeys();
+    const durText = durMs ? `${durVal} ${durUnit}` : 'Never Expire';
+    setStatus(`✅ ${generated.length} key(s) generated · Valid: ${durText}`);
+    showToast(`${generated.length} key(s) generated!`, 'success');
+  }
+
+  function generateCustomKey() {
+    const input = document.getElementById('customKeyInput');
+    let custom = input.value.trim();
+    if (!custom) {
+      setStatus('❌ Please enter a custom key name.', true);
+      showToast('Enter a custom key name', 'error');
+      return;
+    }
+    custom = custom.replace(/[^a-zA-Z0-9\-_]/g, '');
+    if (!custom) {
+      setStatus('❌ Only letters, numbers, - and _ allowed.', true);
+      return;
+    }
+    const unique = custom + '-' + Date.now().toString(36).slice(-6);
+
+    if (keyExists(unique)) {
+      setStatus('❌ This key already exists.', true);
+      return;
+    }
+    if (keys.length >= MAX_KEYS) {
+      setStatus('❌ Max 10,000 keys reached!', true);
+      return;
+    }
+
+    const durVal = document.getElementById('customDurationValue').value;
+    const durUnit = document.getElementById('customDurationUnit').value;
+    const durMs = durationToMs(durVal, durUnit);
+    const now = Date.now();
+    const expiresAt = durMs ? now + durMs : null;
+
+    keys.push({
+      key: unique,
+      used: false,
+      usedAt: null,
+      createdAt: now,
+      expiresAt: expiresAt,
+      note: ''
+    });
+    saveState();
+    updateStats();
+    renderKeys();
+    const durText = durMs ? `${durVal} ${durUnit}` : 'Never Expire';
+    setStatus(`✅ Custom key "${unique}" created · Valid: ${durText}`);
+    showToast('Custom key generated!', 'success');
+    input.value = '';
+  }
+
+  // ============================================================
+  //  KEY OPERATIONS
+  // ============================================================
+  function copyKey(keyStr) {
+    navigator.clipboard.writeText(keyStr).then(() => {
+      showToast('Copied: ' + keyStr.slice(0, 20) + '...', 'success');
+    }).catch(() => {
+      showToast('Copy failed', 'error');
+    });
+  }
+
+  function deleteKey() {
+    const input = document.getElementById('deleteKeyInput');
+    const keyToDelete = input ? input.value.trim() : prompt('Enter the exact key to DELETE:');
+    if (!keyToDelete) return;
+
+    const index = keys.findIndex(k => k.key === keyToDelete);
+    if (index === -1) {
+      setStatus('❌ Key not found.', true);
+      showToast('Key not found', 'error');
+      return;
+    }
+    keys.splice(index, 1);
+    saveState();
+    updateStats();
+    renderKeys();
+    setStatus(`🗑 Deleted key: "${keyToDelete}"`);
+    showToast('Key deleted', 'success');
+    if (input) input.value = '';
+  }
+
+  function deleteKeyByIndex(index) {
+    const k = keys[index];
+    if (!k) return;
+    if (!confirm(`Delete key?\n\n${k.key}`)) return;
+    keys.splice(index, 1);
+    saveState();
+    updateStats();
+    renderKeys();
+    showToast('Key deleted', 'success');
+  }
+
+  function toggleUsed(index) {
+    const k = keys[index];
+    if (!k) return;
+    if (k.used) {
+      k.used = false;
+      k.usedAt = null;
+    } else {
+      k.used = true;
+      k.usedAt = Date.now();
+    }
+    saveState();
+    updateStats();
+    renderKeys();
+  }
+
+  function validateKey() {
+    const input = document.getElementById('validateKeyInput');
+    const keyStr = input.value.trim();
+    if (!keyStr) {
+      showToast('Enter a key first', 'error');
+      return;
+    }
+    const found = keys.find(k => k.key === keyStr);
+    if (!found) {
+      setStatus(`❌ Key "${keyStr}" not found.`, true);
+      showToast('Key not found', 'error');
+      return;
+    }
+    if (found.used) {
+      setStatus(`🔴 Key "${keyStr}" is already USED (${formatTime(found.usedAt)}).`, true);
+      showToast('Key already used', 'error');
+      return;
+    }
+    if (isExpired(found)) {
+      setStatus(`⏰ Key "${keyStr}" has EXPIRED.`, true);
+      showToast('Key expired', 'error');
+      return;
+    }
+    // valid — mark used
+    found.used = true;
+    found.usedAt = Date.now();
+    saveState();
+    updateStats();
+    renderKeys();
+    setStatus(`✅ Key "${keyStr}" is VALID and marked as used.`);
+    showToast('Key validated & marked used', 'success');
+  }
+
+  function resetAllKeys() {
+    if (keys.length === 0) {
+      setStatus('ℹ️ No keys to reset.', false, true);
+      return;
+    }
+    if (confirm('⚠️ Are you sure you want to DELETE ALL keys?')) {
+      keys = [];
+      saveState();
+      updateStats();
+      renderKeys();
+      setStatus('🔄 All keys have been reset.');
+      showToast('All keys deleted', 'success');
+    }
+  }
+
+  function resetUsedKeys() {
+    const before = keys.length;
+    keys = keys.filter(k => !k.used);
+    const removed = before - keys.length;
+    if (removed === 0) {
+      showToast('No used keys to clear', 'info');
+      return;
+    }
+    saveState();
+    updateStats();
+    renderKeys();
+    showToast(`Cleared ${removed} used key(s)`, 'success');
+  }
+
+  function resetExpiredKeys() {
+    const before = keys.length;
+    keys = keys.filter(k => !isExpired(k));
+    const removed = before - keys.length;
+    if (removed === 0) {
+      showToast('No expired keys to clear', 'info');
+      return;
+    }
+    saveState();
+    updateStats();
+    renderKeys();
+    showToast(`Cleared ${removed} expired key(s)`, 'success');
+  }
+
+  // ============================================================
+  //  EXPORT / IMPORT
+  // ============================================================
+  function download(filename, content, type) {
+    const blob = new Blob([content], { type: type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function exportKeys(format) {
+    if (keys.length === 0) {
+      showToast('No keys to export', 'error');
+      return;
+    }
+    const date = new Date().toISOString().slice(0, 10);
+    if (format === 'json') {
+      download(`ahsan-keys-${date}.json`, JSON.stringify(keys, null, 2), 'application/json');
+    } else if (format === 'txt') {
+      const txt = keys.map(k =>
+        `${k.key} | ${k.used ? 'USED' : 'AVAILABLE'} | Created: ${formatTime(k.createdAt)} | ${k.expiresAt ? 'Expires: ' + formatTime(k.expiresAt) : 'Never Expires'}`
+      ).join('\n');
+      download(`ahsan-keys-${date}.txt`, txt, 'text/plain');
+    } else if (format === 'csv') {
+      const header = 'Key,Status,Created,Used,Expires\n';
+      const rows = keys.map(k =>
+        `"${k.key}","${k.used ? 'USED' : 'AVAILABLE'}","${formatTime(k.createdAt)}","${formatTime(k.usedAt)}","${k.expiresAt ? formatTime(k.expiresAt) : 'Never'}"`
+      ).join('\n');
+      download(`ahsan-keys-${date}.csv`, header + rows, 'text/csv');
+    }
+    showToast('Exported ' + format.toUpperCase(), 'success');
+  }
+
+  function importKeys() {
+    const data = document.getElementById('importData').value.trim();
+    if (!data) {
+      showToast('Paste JSON first', 'error');
+      return;
+    }
+    try {
+      const parsed = JSON.parse(data);
+      if (!Array.isArray(parsed)) throw new Error('Not an array');
+      let added = 0;
+      parsed.forEach(k => {
+        if (k && k.key && !keyExists(k.key) && keys.length < MAX_KEYS) {
+          keys.push({
+            key: k.key,
+            used: !!k.used,
+            usedAt: k.usedAt || null,
+            createdAt: k.createdAt || Date.now(),
+            expiresAt: k.expiresAt || null,
+            note: k.note || ''
+          });
+          added++;
+        }
+      });
+      saveState();
+      updateStats();
+      renderKeys();
+      document.getElementById('importData').value = '';
+      showToast(`Imported ${added} key(s)`, 'success');
+    } catch (e) {
+      showToast('Invalid JSON', 'error');
+    }
+  }
+
+  // ============================================================
+  //  RENDER
+  // ============================================================
+  function updateStats() {
+    const total = keys.length;
+    const used = keys.filter(k => k.used).length;
+    const expired = keys.filter(k => isExpired(k)).length;
+    const available = keys.filter(k => isAvailable(k)).length;
+
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statAvailable').textContent = available;
+    document.getElementById('statUsed').textContent = used;
+    document.getElementById('statExpired').textContent = expired;
+    document.getElementById('keyCountBadge').textContent = total + ' keys';
+  }
+
+  function renderKeys() {
+    const container = document.getElementById('keysDisplay');
+    if (!container) return;
+
+    const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
+    const filter = document.getElementById('filterStatus')?.value || 'all';
+    const sort = document.getElementById('sortBy')?.value || 'newest';
+
+    let list = keys.map((k, i) => ({ ...k, _index: i }));
+
+    if (search) {
+      list = list.filter(k => k.key.toLowerCase().includes(search));
+    }
+
+    if (filter === 'available') list = list.filter(k => isAvailable(k));
+    else if (filter === 'used') list = list.filter(k => k.used);
+    else if (filter === 'expired') list = list.filter(k => isExpired(k));
+
+    if (sort === 'newest') list.sort((a, b) => b.createdAt - a.createdAt);
+    else if (sort === 'oldest') list.sort((a, b) => a.createdAt - b.createdAt);
+    else if (sort === 'expiry') {
+      list.sort((a, b) => {
+        if (!a.expiresAt) return 1;
+        if (!b.expiresAt) return -1;
+        return a.expiresAt - b.expiresAt;
+      });
+    }
+
+    if (list.length === 0) {
+      container.innerHTML = `<div class="empty-state">
+        <span class="big">${keys.length === 0 ? '📋' : '🔍'}</span>
+        ${keys.length === 0 ? 'No keys generated yet.' : 'No keys match your filters.'}
+      </div>`;
+      return;
+    }
+
+    const totalAvailable = keys.filter(k => isAvailable(k)).length;
+    const maxReached = keys.length >= MAX_KEYS;
+    let html = `<strong>📋 Showing ${list.length} of ${keys.length} keys</strong>`;
+    html += `<div class="progress-bar" style="margin-top:8px;">
+      <div class="progress-fill" style="width:${(keys.length / MAX_KEYS * 100).toFixed(1)}%"></div>
+    </div>`;
+    html += `<div style="font-size:11px;color:#8892b0;margin-top:4px;">${keys.length} / ${MAX_KEYS} keys used</div>`;
+    html += '<div style="margin-top:12px;">';
+
+    const showList = list.slice(0, 200);
+    showList.forEach(k => {
+      const expired = isExpired(k);
+      let statusIcon, statusText, statusClass;
+      if (k.used) {
+        statusIcon = '🔴'; statusText = 'USED'; statusClass = '#f08a8a';
+      } else if (expired) {
+        statusIcon = '🟡'; statusText = 'EXPIRED'; statusClass = '#f5c77a';
+      } else {
+        statusIcon = '🟢'; statusText = 'AVAILABLE'; statusClass = '#8cf0a0';
+      }
+
+      html += `<div class="key-item">
+        <div class="key-text">
+          ${statusIcon} ${k.key}
+          <div style="font-size:10px;color:#5a6480;margin-top:3px;">
+            Created: ${formatTime(k.createdAt)} · ${timeLeft(k.expiresAt)}
+          </div>
+        </div>
+        <div class="key-meta">
+          <span style="color:${statusClass};font-size:10px;font-weight:600;">${statusText}</span>
+          <div class="key-actions">
+            <button class="icon-btn" onclick="copyKey('${k.key.replace(/'/g, "\\'")}')" title="Copy">📋</button>
+            <button class="icon-btn" onclick="toggleUsed(${k._index})" title="Toggle Used">${k.used ? '↩️' : '✅'}</button>
+            <button class="icon-btn danger" onclick="deleteKeyByIndex(${k._index})" title="Delete">🗑</button>
+          </div>
+        </div>
+      </div>`;
+    });
+
+    if (list.length > 200) {
+      html += `<div style="color:#8892b0;font-size:12px;margin-top:8px;text-align:center;">... and ${list.length - 200} more (use search/filter)</div>`;
+    }
+    html += '</div>';
+    container.innerHTML = html;
+  }
+
+  // ============================================================
+  //  KEY VALIDATION (external API)
+  // ============================================================
+  function markKeyAsUsed(keyStr) {
+    const found = keys.find(k => k.key === keyStr);
+    if (found && !found.used && !isExpired(found)) {
+      found.used = true;
+      found.usedAt = Date.now();
+      saveState();
+      updateStats();
+      renderKeys();
+      return true;
+    }
+    return false;
+  }
+
+  window.markKeyAsUsed = markKeyAsUsed;
+  window.AhsanKeyManager = {
+    validate: markKeyAsUsed,
+    getAll: () => [...keys],
+    getAvailable: () => keys.filter(isAvailable),
+    stats: () => ({
+      total: keys.length,
+      available: keys.filter(isAvailable).length,
+      used: keys.filter(k => k.used).length,
+      expired: keys.filter(isExpired).length
+    })
+  };
+
+  // ============================================================
+  //  INIT
+  // ============================================================
+  loadState();
+  // Pre-fill login for convenience? No - keep secure
+  // For testing:
+  // document.getElementById('loginEmail').value = VALID_EMAIL;
+  // document.getElementById('loginPassword').value = VALID_PASS;
+</script>
+
+</body>
+</html>
